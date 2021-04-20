@@ -1,0 +1,24 @@
+			 _________________
+			*		  *
+			*  VERSION 1.1.0  *
+			*_________________*
+
+
+NEWS FROM 1.0.0	TO 1.1.0
+
+  - NEW FUNCTIONS: in lib/gauge_conf_upd.c and include/gauge_conf.h:
+			(int) metropolis_fond_plus_adj()
+			
+  - MODIFICATIONS: 1) in lib/gparam.h -> struct GParam:
+			 (double) d_adj_beta simulation parameter added 
+
+		   2) in lib/gparam.c -> readinput():
+			 now reads also the parameter d_adj_beta in input 
+			
+		   3) in src/main_su2.c -> print_template_input():
+			 new parameter d_adj_beta added to the template
+	
+		   4) in lib/gauge_conf_upd.c -> update_metropolis():
+			 case with d_adj_beta!=0 added, metropolis with fond+adj action			 
+			
+************************************************************************
