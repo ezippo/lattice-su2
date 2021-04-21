@@ -1,0 +1,16 @@
+			 _________________
+			*		  *
+			*  VERSION 1.1.1  *
+			*_________________*
+
+
+NEWS FROM 1.1.0	TO 1.1.1
+
+  - NEW FUNCTIONS: in lib/gauge_conf_meas.c and include/gauge_conf.h:
+			(void) plaquette_adj()
+			compute the mean adjoint plaquettes
+			
+  - MODIFICATIONS: 1) in lib/gauge_conf_meas.c -> perform_measures_localobs:
+			 if d_adj_beta!=0 plaquettes_adj(spatial, temporal) added to data file 
+		
+********************************************************************************
