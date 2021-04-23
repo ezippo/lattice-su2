@@ -94,20 +94,17 @@ int metropolis(Gauge_Conf *GC,
                Geometry const * const geo,
                GParam const * const param,
                long r,
-               int i,
-               int numhits);
+               int i);
 int metropolis_fund_plus_adj(Gauge_Conf *GC,
                              Geometry const * const geo,
                              GParam const * const param,
                              long r,
-                             int i,
-                             int numhits);
+                             int i);
 void update(Gauge_Conf *GC,
             Geometry const * const geo,
             GParam const * const param);
 double update_metropolis(Gauge_Conf * GC,
             Geometry const * const geo,
-            GParam const * const param,
-            int numhits);
+            GParam const * const param);
 
 #endif

@@ -23,7 +23,7 @@ void real_main(char *in_file)
     Geometry geo;
     GParam param;
 
-    int count, numhits_metro=1;
+    int count;
     double acc_metro=0.0;
     FILE *datafilep;
     time_t time1, time2;
@@ -54,7 +54,7 @@ void real_main(char *in_file)
     // count starts from 1 to avoid problems using %
     for(count=1; count < param.d_sample + 1; count++)
        {
-       acc_metro += update_metropolis(&GC, &geo, &param, numhits_metro);
+       acc_metro += update_metropolis(&GC, &geo, &param);
 
        if(count % param.d_measevery ==0 && count >= param.d_thermal)
          {
@@ -114,7 +114,7 @@ void print_template_input(void)
     fprintf(fp, "size ");
     for (i=0; i<STDIM; i++)   fprintf(fp,"4 ");
     fprintf(fp,"\n");
-    fprintf(fp, "beta 5.705\n");
+    fprintf(fp, "beta     5.705\n");
     fprintf(fp, "adj_beta 0.0\n");
     fprintf(fp,"\n");
     fprintf(fp, "sample    10\n");
@@ -125,6 +125,7 @@ void print_template_input(void)
     fprintf(fp, "saveconf_back_every     5  # if 0 does not save, else save backup configurations every ... updates\n");
     fprintf(fp, "\n");
     fprintf(fp, "epsilon_metro  0.1\n");
+    fprintf(fp, "hits_metro     1\n");
     fprintf(fp,"\n");
     fprintf(fp, "#output files\n");
     fprintf(fp, "conf_file  conf.dat\n");

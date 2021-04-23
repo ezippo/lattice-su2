@@ -266,8 +266,7 @@ int metropolis(Gauge_Conf *GC,
              Geometry const * const geo,
              GParam const * const param,
              long r,
-             int i,
-             int numhits)
+             int i)
 {
 #ifdef DEBUG
 if(r >= param->d_volume)
@@ -290,7 +289,7 @@ calcstaples_wilson(GC, geo, param, r, i, &stap);
 
 acc=0;
 
-for(hits=0; hits<numhits; hits++)
+for(hits=0; hits<param->d_hits_metro; hits++)
    {
    // compute old action
    times(&tmp_matrix, &(GC->lattice[r][i]), &stap);
@@ -333,8 +332,7 @@ int metropolis_fund_plus_adj(Gauge_Conf *GC,
                              Geometry const * const geo,
                              GParam const * const param,
                              long r,
-                             int i,
-                             int numhits)
+                             int i)
   {
   #ifdef DEBUG
   if(r >= param->d_volume)
@@ -357,7 +355,7 @@ int metropolis_fund_plus_adj(Gauge_Conf *GC,
 
   acc=0;
 
-  for(hits=0; hits<numhits; hits++)
+  for(hits=0; hits<param->d_hits_metro; hits++)
      {
      // compute old action
      for(i_stap=1; i_stap<2*(STDIM-1)+1; i_stap++)
@@ -366,8 +364,6 @@ int metropolis_fund_plus_adj(Gauge_Conf *GC,
        tmp = 2.0*retr(&tmp_matrix);
        action_old=-param->d_beta*(tmp*0.5);    // wilson term
        action_old-=param->d_adj_beta*(tmp*tmp/3.0);   // adjoint term
-       tmp = 2.0*imtr(&tmp_matrix);
-       action_old-=param->d_adj_beta*(tmp*tmp)/3.0;  // adjoint term
      }
 
      // compute the new link
@@ -388,8 +384,6 @@ int metropolis_fund_plus_adj(Gauge_Conf *GC,
        tmp = 2.0*retr(&tmp_matrix);
        action_new=-param->d_beta*(tmp*0.5);    // wilson term
        action_new-=param->d_adj_beta*(tmp*tmp/3.0);   // adjoint term
-       tmp = 2.0*imtr(&tmp_matrix);
-       action_new-=param->d_adj_beta*(tmp*tmp)/3.0;  // adjoint term
        }
 
      if(casuale()< exp(action_old-action_new))
@@ -494,8 +488,7 @@ void update(Gauge_Conf * GC,
 // perform a complete update using Metropolis
 double update_metropolis(Gauge_Conf * GC,
             Geometry const * const geo,
-            GParam const * const param,
-            int numhits)
+            GParam const * const param)
    {
    for(int i=0; i<STDIM; i++)
       {
@@ -520,19 +513,19 @@ double update_metropolis(Gauge_Conf * GC,
         #endif
 
         #ifdef OPENMP_MODE
-        #pragma omp parallel for reduction(+:acc) num_threads(NTHREADS) private(r)
+        #pragma omp parallel for num_threads(NTHREADS) private(r) reduction(+:acc)
         #endif
         for(r=0; r<(param->d_volume)/2; r++)
            {
-           acc += metropolis(GC, geo, param, r, dir, numhits);
+           acc += metropolis(GC, geo, param, r, dir);
            }
 
         #ifdef OPENMP_MODE
-        #pragma omp parallel for reduction(+:acc) num_threads(NTHREADS) private(r)
+        #pragma omp parallel for num_threads(NTHREADS) private(r) reduction(+:acc)
         #endif
         for(r=(param->d_volume)/2; r<(param->d_volume); r++)
            {
-           acc += metropolis(GC, geo, param, r, dir, numhits);
+           acc += metropolis(GC, geo, param, r, dir);
            }
          }
      }
@@ -546,23 +539,23 @@ double update_metropolis(Gauge_Conf * GC,
         #endif
 
         #ifdef OPENMP_MODE
-        #pragma omp parallel for reduction(+:acc) num_threads(NTHREADS) private(r)
+        #pragma omp parallel for num_threads(NTHREADS) private(r) reduction(+:acc)
         #endif
         for(r=0; r<(param->d_volume)/2; r++)
            {
-           acc += metropolis(GC, geo, param, r, dir, numhits);
+           acc += metropolis_fund_plus_adj(GC, geo, param, r, dir);
            }
 
         #ifdef OPENMP_MODE
-        #pragma omp parallel for reduction(+:acc) num_threads(NTHREADS) private(r)
+        #pragma omp parallel for num_threads(NTHREADS) private(r) reduction(+:acc)
         #endif
         for(r=(param->d_volume)/2; r<(param->d_volume); r++)
            {
-           acc += metropolis(GC, geo, param, r, dir, numhits);
+           acc += metropolis_fund_plus_adj(GC, geo, param, r, dir);
            }
          }
        }
-    acc /= (double)(numhits*param->d_volume*STDIM);
+    acc /= (double)(param->d_hits_metro*param->d_volume*STDIM);
 
    // final unitarization
    #ifdef OPENMP_MODE

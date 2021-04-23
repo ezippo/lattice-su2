@@ -69,4 +69,4 @@ main_su2_SOURCES=./src/main_su2.c \
 
 AM_CFLAGS = -std=c99 -O2 -Wall -Wextra -Werror -pedantic -Wconversion @OPENMP_CFLAGS@
 
-CLEANFILES = dati.dat log.dat dati.log conf.dat* template_input.in 
+CLEANFILES = dati* log* dati* conf.dat* template_input* 

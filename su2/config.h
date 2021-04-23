@@ -65,7 +65,7 @@
 #define PACKAGE_NAME "su2"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "su2 1.1.1"
+#define PACKAGE_STRING "su2 1.1.2"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "su2"
@@ -74,7 +74,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.1.1"
+#define PACKAGE_VERSION "1.1.2"
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
@@ -83,7 +83,7 @@
 #define STDIM 4
 
 /* Version number of package */
-#define VERSION "1.1.1"
+#define VERSION "1.1.2"
 
 /* Define for Solaris 2.5.1 so the uint32_t typedef from <sys/synch.h>,
    <pthread.h>, or <semaphore.h> is not used. If the typedef were allowed, the

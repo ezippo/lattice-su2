@@ -25,6 +25,7 @@ typedef struct GParam {
 
   // for metropolis
   double d_epsilon_metro;
+  int d_hits_metro;
 
   // output file names
   char d_conf_file[STD_STRING_LENGTH];

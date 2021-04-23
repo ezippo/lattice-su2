@@ -13,4 +13,25 @@ NEWS FROM 1.1.0	TO 1.1.1
   - MODIFICATIONS: 1) in lib/gauge_conf_meas.c -> perform_measures_localobs:
 			 if d_adj_beta!=0 plaquettes_adj(spatial, temporal) added to data file 
 		
-********************************************************************************
+**************************************************************************************
+
+NEWS FROM 1.1.1 TO 1.1.2
+
+  - CONTROLS ADDED: in lib/gparam.c -> readinput():
+			control if epsilon_metro<1
+
+  - MODIFICATIONS: 1) in Makefile.am:
+			 now "make clean" cleans all file dati*, log*, template_input*
+
+		   2) in include/gparam.h -> struct GParam
+		      in lib/gparam.c -> readinput(), print_parameters_local()
+		      in src/main_su2.c -> real_main(), print_template_input()
+		      in lib/guage_conf_upd.c -> metropolis(), metropolis_fund_plus_adj()
+
+			 new parameter d_hits_metro
+
+			 now update_metropolis(),metropolis(),metropolis_fund_plus_adj()
+			 does not depend by (int)numhits.
+
+  - BUG FIXED: in lib/gauge_conf_meas.c -> update_metropolis():
+			if d_adj_beta!=0 use metropolis_fund_plus_adj() (not metropolis())

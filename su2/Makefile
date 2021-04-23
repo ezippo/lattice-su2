@@ -245,16 +245,16 @@ OPENMP_CFLAGS =
 PACKAGE = su2
 PACKAGE_BUGREPORT = emanuele.zippo@gmail.com
 PACKAGE_NAME = su2
-PACKAGE_STRING = su2 1.1.1
+PACKAGE_STRING = su2 1.1.2
 PACKAGE_TARNAME = su2
 PACKAGE_URL = 
-PACKAGE_VERSION = 1.1.1
+PACKAGE_VERSION = 1.1.2
 PATH_SEPARATOR = :
 SET_MAKE = 
 SHELL = /bin/bash
 STRIP = 
 ST_dim = 
-VERSION = 1.1.1
+VERSION = 1.1.2
 abs_builddir = /mnt/c/Users/e.zippo/Desktop/Università/Tesi/codice_lattice_su2/lattice-su2/su2
 abs_srcdir = /mnt/c/Users/e.zippo/Desktop/Università/Tesi/codice_lattice_su2/lattice-su2/su2
 abs_top_builddir = /mnt/c/Users/e.zippo/Desktop/Università/Tesi/codice_lattice_su2/lattice-su2/su2
@@ -364,7 +364,7 @@ main_su2_SOURCES = ./src/main_su2.c \
                           $(everything)
 
 AM_CFLAGS = -std=c99 -O2 -Wall -Wextra -Werror -pedantic -Wconversion 
-CLEANFILES = dati.dat log.dat dati.log conf.dat* template_input.in 
+CLEANFILES = dati* log* dati* conf.dat* template_input* 
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 

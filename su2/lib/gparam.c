@@ -193,8 +193,23 @@ void readinput(char *in_file, GParam *param)
                     fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
                     exit(EXIT_FAILURE);
                     }
-                  param->d_epsilon_metro=temp_d;
+                  if(fabs(temp_d)>1.0)
+                    {
+                    fprintf(stderr, "ERROR: epsilon_metro must be less than 1\n");
+                    exit(EXIT_FAILURE);
+                    }
+                  else  param->d_epsilon_metro=temp_d;
                   }
+           else if(strncmp(str, "hits_metro", 10)==0)
+                 {
+                 err=fscanf(input, "%d", &temp_i);
+                 if(err!=1)
+                   {
+                   fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
+                   exit(EXIT_FAILURE);
+                   }
+                 param->d_hits_metro=temp_i;
+                 }
 
            else if(strncmp(str, "conf_file", 9)==0)
                   {
@@ -387,6 +402,7 @@ void print_parameters_local(GParam const * const param, time_t time_start, time_
     fprintf(fp, "thermal:   %d\n", param->d_thermal);
     fprintf(fp, "measevery: %d\n", param->d_measevery);
     fprintf(fp, "metroespilon: %.10lf\n", param->d_epsilon_metro);
+    fprintf(fp, "hits metro: %d \n", param->d_hits_metro);
 
     fprintf(fp, "\n");
 
