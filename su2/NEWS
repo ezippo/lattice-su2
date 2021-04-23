@@ -35,3 +35,11 @@ NEWS FROM 1.1.1 TO 1.1.2
 
   - BUG FIXED: in lib/gauge_conf_meas.c -> update_metropolis():
 			if d_adj_beta!=0 use metropolis_fund_plus_adj() (not metropolis())
+
+*******************************************************************************************
+
+NEWS FROM 1.1.2 TO 1.1.3
+
+  - TESTS: Wilson action, fund plus adj action, plaquette, plaquette adj tested 
+
+  - BUG FIXED: metropolis_fund_plus_adj() fixed 	   

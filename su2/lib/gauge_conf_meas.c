@@ -117,7 +117,7 @@ void plaquette_adj(Gauge_Conf const * const GC,
               double *plaqt)
   {
   long r;
-  double ps, pt, tmp;
+  double ps, pt;
 
   ps=0.0;
   pt=0.0;
@@ -131,6 +131,7 @@ void plaquette_adj(Gauge_Conf const * const GC,
      i=0;
      for(j=1; j<STDIM; j++)
         {
+        double tmp;
         tmp=plaquettep(GC, geo, param, r, i, j);
         pt+=tmp*tmp;
         }
@@ -139,6 +140,7 @@ void plaquette_adj(Gauge_Conf const * const GC,
         {
         for(j=i+1; j<STDIM; j++)
            {
+           double tmp;
            tmp=plaquettep(GC, geo, param, r, i, j);
            ps+=tmp*tmp;
            }
@@ -228,6 +230,9 @@ void perform_measures_localobs(Gauge_Conf const * const GC,
       }
    fflush(datafilep);
    }
+
+
+
 
 
 #endif

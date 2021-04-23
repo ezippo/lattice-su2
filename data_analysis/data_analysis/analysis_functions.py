@@ -82,6 +82,14 @@ def plot_sampletrend(sample, x_label="x",y_label="y",title="", figure=100 ):
     pyp.ylabel(y_label)
     pyp.title(title)
     
+def plot_points(x,y,x_label="x",y_label="y",title="", fmt="-", figure=100):
+    ''' plot points in xy plane '''
+    pyp.figure(figure)
+    pyp.plot(x,y,fmt)
+    pyp.grid(True)
+    pyp.xlabel(x_label)
+    pyp.ylabel(y_label)
+    pyp.title(title)
 
 def plot_errorbar(x,y,dy, x_label="x", y_label="y", title="", dx=0, fmt_=".", figure=200 ):
     ''' plot with error '''

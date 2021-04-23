@@ -348,7 +348,7 @@ int metropolis_fund_plus_adj(Gauge_Conf *GC,
   #endif
 
   Su2 stap[2*(STDIM-1)+1], new_link, tmp_matrix, rnd_matrix;
-  double action_new, action_old, tmp;
+  double action_new=0.0, action_old=0.0, tmp;
   int acc, hits, i_stap;
 
   calcstaples_wilson_nosum(GC, geo, param, r, i, stap);
@@ -359,12 +359,12 @@ int metropolis_fund_plus_adj(Gauge_Conf *GC,
      {
      // compute old action
      for(i_stap=1; i_stap<2*(STDIM-1)+1; i_stap++)
-      {
+       {
        times(&tmp_matrix, &(GC->lattice[r][i]), &stap[i_stap]);
        tmp = 2.0*retr(&tmp_matrix);
-       action_old=-param->d_beta*(tmp*0.5);    // wilson term
-       action_old-=param->d_adj_beta*(tmp*tmp/3.0);   // adjoint term
-     }
+       action_old-=param->d_beta*tmp/2.0;    // wilson term
+       action_old-=param->d_adj_beta*(tmp*tmp)/3.0;   // adjoint term
+       }
 
      // compute the new link
      rand_matrix_p0(param->d_epsilon_metro, &rnd_matrix);   // rnd_matrix = Proj_on_the_group[ 1 + epsilon_metro*random_matrix ]
@@ -382,8 +382,8 @@ int metropolis_fund_plus_adj(Gauge_Conf *GC,
        {
        times(&tmp_matrix, &new_link, &stap[i_stap]);
        tmp = 2.0*retr(&tmp_matrix);
-       action_new=-param->d_beta*(tmp*0.5);    // wilson term
-       action_new-=param->d_adj_beta*(tmp*tmp/3.0);   // adjoint term
+       action_new-=param->d_beta*tmp/2.0;    // wilson term
+       action_new-=param->d_adj_beta*(tmp*tmp)/3.0;   // adjoint term
        }
 
      if(casuale()< exp(action_old-action_new))
