@@ -72,6 +72,11 @@ void wilson_loop(Gauge_Conf const * const GC,
                  int const size_j,
                  double *wloop_s,
                  double *wloop_t);
+double creutz_ratio(Gauge_Conf const * const GC,
+                  Geometry const * const geo,
+                  GParam const * const param,
+                  int size_i,
+                  int size_j);
 void polyakov(Gauge_Conf const * const GC,
               Geometry const * const geo,
               GParam const * const param,

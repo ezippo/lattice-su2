@@ -304,6 +304,27 @@ void wilson_loop(Gauge_Conf const * const GC,
 }
 
 
+// compute the mean creutz ratio=-ln( (W(size_i,size_j)*W(size_i-1,size_j-1)) / (W(size_i-1,size_j)*W(size_i,size_j-1)) )
+double creutz_ratio(Gauge_Conf const * const GC,
+                  Geometry const * const geo,
+                  GParam const * const param,
+                  int size_i,
+                  int size_j)
+{
+  double wloop_s, wloop_t, creutz;
+
+  wilson_loop(GC, geo, param, size_i, size_j, wloop_s, wloop_t);
+  creutz = 0.5*(wloop_s+wloop_t);
+  wilson_loop(GC, geo, param, size_i-1, size_j-1, wloop_s, wloop_t);
+  creutz *= 0.5*(wloop_s+wloop_t);
+  wilson_loop(GC, geo, param, size_i-1, size_j, wloop_s, wloop_t);
+  creutz /= 0.5*(wloop_s+wloop_t);
+  wilson_loop(GC, geo, param, size_i, size_j-1, wloop_s, wloop_t);
+  creutz /= 0.5*(wloop_s+wloop_t);
+
+  return -log(creutz);
+}
+
 // compute the mean Polyakov loop (the trace of)
 void polyakov(Gauge_Conf const * const GC,
               Geometry const * const geo,
@@ -349,22 +370,23 @@ void perform_measures_localobs(Gauge_Conf const * const GC,
                                GParam const * const param,
                                FILE *datafilep)
    {
-   double plaqs, plaqt, wloops, wloopt, polyre, polyim;
+   double plaqs, plaqt, wloops, wloopt, polyre, polyim, creutz;
 
    plaquette(GC, geo, param, &plaqs, &plaqt);
    wilson_loop(GC, geo, param, 2, 2, &wloops, &wloopt);
    polyakov(GC, geo, param, &polyre, &polyim);
+   creutz = creutz_ratio(GC, geo, param, 2, 2);
 
    if(fabs(param->d_adj_beta)<MIN_VALUE)
       {
-      fprintf(datafilep, "%.12g %.12g %.12g %.12g %.12g %.12g ", plaqs, plaqt, wloops, wloopt, polyre, polyim);
+      fprintf(datafilep, "%.12g %.12g %.12g %.12g %.12g %.12g %.12g ", plaqs, plaqt, wloops, wloopt, polyre, polyim, creutz);
       fprintf(datafilep, "\n");
       }
    else
       {
       double plaqs_adj, plaqt_adj;
       plaquette_adj(GC, geo, param, &plaqs_adj, &plaqt_adj);
-      fprintf(datafilep, "%.12g %.12g %.12g %.12g %.12g %.12g %.12g %.12g ", plaqs, plaqt, wloops, wloopt, plaqs_adj, plaqt_adj, polyre, polyim);
+      fprintf(datafilep, "%.12g %.12g %.12g %.12g %.12g %.12g %.12g %.12g %.12g ", plaqs, plaqt, wloops, wloopt, plaqs_adj, plaqt_adj, polyre, polyim, creutz);
       fprintf(datafilep, "\n");
       }
    fflush(datafilep);

@@ -1,6 +1,6 @@
 			 _________________
 			*		  *
-			*  VERSION 1.2.0  *
+			*  VERSION 1.2.1  *
 			*_________________*
 
 
@@ -18,3 +18,11 @@ NEWS FROM 1.1.3	TO 1.2.0
   - TESTS: wilson loop tested 
 		
 **************************************************************************************
+
+NEWS FROM 1.2.0 TO 1.2.1
+
+  - NEW FUNCTIONS: in lib/gauge_conf_meas.c and include/gauge_conf.h:
+			- (double) creutz_ratio()
+
+  - MODIFICATIONS: in lib/gauge_conf_meas.c -> perform_measures_localobs:
+			observable creutz_ratio added
