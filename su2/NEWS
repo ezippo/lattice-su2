@@ -26,3 +26,5 @@ NEWS FROM 1.2.0 TO 1.2.1
 
   - MODIFICATIONS: in lib/gauge_conf_meas.c -> perform_measures_localobs:
 			observable creutz_ratio added
+
+  - TESTS: creutz ratio tested

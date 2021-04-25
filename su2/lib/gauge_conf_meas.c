@@ -313,13 +313,21 @@ double creutz_ratio(Gauge_Conf const * const GC,
 {
   double wloop_s, wloop_t, creutz;
 
-  wilson_loop(GC, geo, param, size_i, size_j, wloop_s, wloop_t);
+  #ifdef DEBUG
+    if(size_i<1 || size_j<1)
+    {
+      fprintf(stderr, "Error in creutz ratio computation: size_i and size_j must be greater than 1\n");
+      exit(EXIT_FAILURE);
+    }
+  #endif
+
+  wilson_loop(GC, geo, param, size_i, size_j, &wloop_s, &wloop_t);
   creutz = 0.5*(wloop_s+wloop_t);
-  wilson_loop(GC, geo, param, size_i-1, size_j-1, wloop_s, wloop_t);
+  wilson_loop(GC, geo, param, size_i-1, size_j-1, &wloop_s, &wloop_t);
   creutz *= 0.5*(wloop_s+wloop_t);
-  wilson_loop(GC, geo, param, size_i-1, size_j, wloop_s, wloop_t);
+  wilson_loop(GC, geo, param, size_i-1, size_j, &wloop_s, &wloop_t);
   creutz /= 0.5*(wloop_s+wloop_t);
-  wilson_loop(GC, geo, param, size_i, size_j-1, wloop_s, wloop_t);
+  wilson_loop(GC, geo, param, size_i, size_j-1, &wloop_s, &wloop_t);
   creutz /= 0.5*(wloop_s+wloop_t);
 
   return -log(creutz);
