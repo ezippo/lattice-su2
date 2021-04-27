@@ -203,6 +203,7 @@ void calcstaples_wilson_nosum(Gauge_Conf const * const GC,
 
 
 // perform an update with heatbath
+// action used: wilson action
 void heatbath(Gauge_Conf *GC,
               Geometry const * const geo,
               GParam const * const param,
@@ -232,6 +233,7 @@ void heatbath(Gauge_Conf *GC,
 
 
 // perform an update with overrelaxation
+// action used: wilson action
 void overrelaxation(Gauge_Conf *GC,
                     Geometry const * const geo,
                     GParam const * const param,
@@ -261,6 +263,7 @@ void overrelaxation(Gauge_Conf *GC,
 
 
 // perform an update with metropolis
+// action used: wilson action
 // return 1 if the proposed update is accepted
 int metropolis(Gauge_Conf *GC,
              Geometry const * const geo,
@@ -326,7 +329,7 @@ return acc;
 
 
 // perform an update with metropolis
-// action used: wilson + adjoint
+// action used: fundamental + adjoint
 // return 1 if the proposed update is accepted
 int metropolis_fund_plus_adj(Gauge_Conf *GC,
                              Geometry const * const geo,

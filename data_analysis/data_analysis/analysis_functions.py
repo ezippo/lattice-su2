@@ -99,7 +99,35 @@ def plot_errorbar(x,y,dy, x_label="x", y_label="y", title="", dx=0, fmt_=".", fi
     pyp.ylabel(y_label)
     pyp.grid(True)
     pyp.title(title)
+    
+def creutz_ratio(wloop, wloop_11, wloop_10, wloop_01):
+    return -np.log((average(wloop)*average(wloop_11))/(average(wloop_01)*average(wloop_10)))
+    
 
+def sigma_bootstrap_creutz(wloop, wloop_11, wloop_10, wloop_01, pow_bin=0, n_resample=100, n_term=0):
+    if not len(wloop)==len(wloop_11)==len(wloop_01)==len(wloop_10):
+        print("ERROR in sigma_bootstrap_creutz: wloop samples have different lenght")
+        return 0
+    
+    dim_bin = 2**pow_bin
+    n_bin = int(( len(wloop[n_term:]) )/ dim_bin)    
+    N = n_bin * dim_bin
+    
+    wloop_split = np.reshape( wloop[n_term: n_term+N], (n_bin, dim_bin) )
+    wloop_11_split = np.reshape( wloop_11[n_term: n_term+N], (n_bin, dim_bin) )
+    wloop_01_split = np.reshape( wloop_01[n_term: n_term+N], (n_bin, dim_bin) )
+    wloop_10_split = np.reshape( wloop_10[n_term: n_term+N], (n_bin, dim_bin) )
+    
+    rnd_matrix = np.random.randint(n_bin, size=(n_resample,n_bin))
+    
+    wloop_resample = np.array([ np.reshape( np.array([ wloop_split[i] for i in rnd_matrix[k] ]), N ) for k in range(n_resample) ])
+    wloop_11_resample = np.array([ np.reshape( np.array([ wloop_11_split[i] for i in rnd_matrix[k] ]), N ) for k in range(n_resample) ])
+    wloop_01_resample = np.array([ np.reshape( np.array([ wloop_01_split[i] for i in rnd_matrix[k] ]), N ) for k in range(n_resample) ])
+    wloop_10_resample = np.array([ np.reshape( np.array([ wloop_10_split[i] for i in rnd_matrix[k] ]), N ) for k in range(n_resample) ])
+    
+    mu = np.array([ creutz_ratio(wloop_resample[i], wloop_11_resample[i], wloop_10_resample[i], wloop_01_resample[i]) for i in range(n_resample) ])
+    
+    return np.sqrt(((mu - average(mu))**2).sum()/n_resample)
 
 #if __name__=='__main__':
     

@@ -97,12 +97,7 @@ void readinput(char *in_file, GParam *param)
                   fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
                   exit(EXIT_FAILURE);
                   }
-                if(temp_i>1)  param->d_size[i]=temp_i;
-                else
-                  {
-                  fprintf(stderr, "Error in reading the file %s (%s, %d)\n  -size %d must be greater than 1\n", in_file, __FILE__, __LINE__, i+1);
-                  exit(EXIT_FAILURE);
-                  }
+                param->d_size[i]=temp_i;
                 }
              }
 
@@ -158,6 +153,25 @@ void readinput(char *in_file, GParam *param)
                     }
                   param->d_measevery=temp_i;
                   }
+
+           else if(strncmp(str, "loop_size", 9)==0)
+              {
+              for(i=0; i<2; i++)
+                 {
+                 err=fscanf(input, "%d", &temp_i);
+                 if(err!=1)
+                   {
+                   fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
+                   exit(EXIT_FAILURE);
+                   }
+                 if(temp_i>0)  param->d_loop_size[i]=temp_i;
+                 else
+                   {
+                   fprintf(stderr, "Error in reading the file %s (%s, %d)\n  - loop_size %d must be greater than 0\n", in_file, __FILE__, __LINE__, i+1);
+                   exit(EXIT_FAILURE);
+                   }
+                 }
+              }
 
            else if(strncmp(str, "start", 5)==0)
                   {
@@ -401,6 +415,9 @@ void print_parameters_local(GParam const * const param, time_t time_start, time_
     fprintf(fp, "sample:    %d\n", param->d_sample);
     fprintf(fp, "thermal:   %d\n", param->d_thermal);
     fprintf(fp, "measevery: %d\n", param->d_measevery);
+
+    fprintf(fp, "loop size: %d %d \n ", param->d_loop_size[0], param->d_loop_size[1]);
+
     fprintf(fp, "metroespilon: %.10lf\n", param->d_epsilon_metro);
     fprintf(fp, "hits metro: %d \n", param->d_hits_metro);
 

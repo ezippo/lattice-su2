@@ -19,6 +19,9 @@ typedef struct GParam {
   int d_thermal;
   int d_measevery;
 
+  // observables
+  int d_loop_size[2];
+
   // initialization & saving
   int d_start;
   int d_saveconf_back_every;

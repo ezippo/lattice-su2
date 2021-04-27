@@ -304,35 +304,6 @@ void wilson_loop(Gauge_Conf const * const GC,
 }
 
 
-// compute the mean creutz ratio=-ln( (W(size_i,size_j)*W(size_i-1,size_j-1)) / (W(size_i-1,size_j)*W(size_i,size_j-1)) )
-double creutz_ratio(Gauge_Conf const * const GC,
-                  Geometry const * const geo,
-                  GParam const * const param,
-                  int size_i,
-                  int size_j)
-{
-  double wloop_s, wloop_t, creutz;
-
-  #ifdef DEBUG
-    if(size_i<1 || size_j<1)
-    {
-      fprintf(stderr, "Error in creutz ratio computation: size_i and size_j must be greater than 1\n");
-      exit(EXIT_FAILURE);
-    }
-  #endif
-
-  wilson_loop(GC, geo, param, size_i, size_j, &wloop_s, &wloop_t);
-  creutz = 0.5*(wloop_s+wloop_t);
-  wilson_loop(GC, geo, param, size_i-1, size_j-1, &wloop_s, &wloop_t);
-  creutz *= 0.5*(wloop_s+wloop_t);
-  wilson_loop(GC, geo, param, size_i-1, size_j, &wloop_s, &wloop_t);
-  creutz /= 0.5*(wloop_s+wloop_t);
-  wilson_loop(GC, geo, param, size_i, size_j-1, &wloop_s, &wloop_t);
-  creutz /= 0.5*(wloop_s+wloop_t);
-
-  return -log(creutz);
-}
-
 // compute the mean Polyakov loop (the trace of)
 void polyakov(Gauge_Conf const * const GC,
               Geometry const * const geo,
@@ -378,23 +349,27 @@ void perform_measures_localobs(Gauge_Conf const * const GC,
                                GParam const * const param,
                                FILE *datafilep)
    {
-   double plaqs, plaqt, wloops, wloopt, polyre, polyim, creutz;
-
+   double plaqs, plaqt, wloops, wloopt, wloops_01, wloopt_01, wloops_11, wloopt_11, wloops_10, wloopt_10, polyre, polyim;
+   int size1, size2;
+   size1 = param->d_loop_size[0];
+   size2 = param->d_loop_size[1];
    plaquette(GC, geo, param, &plaqs, &plaqt);
-   wilson_loop(GC, geo, param, 2, 2, &wloops, &wloopt);
+   wilson_loop(GC, geo, param, size1, size2, &wloops, &wloopt);
+   wilson_loop(GC, geo, param, size1-1, size2-1, &wloops_11, &wloopt_11);
+   wilson_loop(GC, geo, param, size1, size2-1, &wloops_01, &wloopt_01);
+   wilson_loop(GC, geo, param, size1-1, size2, &wloops_10, &wloopt_10);
    polyakov(GC, geo, param, &polyre, &polyim);
-   creutz = creutz_ratio(GC, geo, param, 2, 2);
 
-   if(fabs(param->d_adj_beta)<MIN_VALUE)
+   if(fabs(param->d_adj_beta)<MIN_VALUE)      // wilson action
       {
-      fprintf(datafilep, "%.12g %.12g %.12g %.12g %.12g %.12g %.12g ", plaqs, plaqt, wloops, wloopt, polyre, polyim, creutz);
+      fprintf(datafilep, "%.12g %.12g %.12g %.12g %.12g %.12g %.12g ", 0.5*(plaqs+plaqt), 0.5*(wloops+wloopt), 0.5*(wloops_11+wloopt_11), 0.5*(wloops_10+wloopt_10), 0.5*(wloops_01+wloopt_01), polyre, polyim);
       fprintf(datafilep, "\n");
       }
-   else
+   else                      // fundamental plus adjoint action
       {
       double plaqs_adj, plaqt_adj;
       plaquette_adj(GC, geo, param, &plaqs_adj, &plaqt_adj);
-      fprintf(datafilep, "%.12g %.12g %.12g %.12g %.12g %.12g %.12g %.12g %.12g ", plaqs, plaqt, wloops, wloopt, plaqs_adj, plaqt_adj, polyre, polyim, creutz);
+      fprintf(datafilep, "%.12g %.12g %.12g %.12g %.12g %.12g %.12g %.12g ", 0.5*(plaqs+plaqt), 0.5*(wloops+wloopt), 0.5*(wloops_11+wloopt_11), 0.5*(wloops_10+wloopt_10), 0.5*(wloops_01+wloopt_01), 0.5*(plaqs_adj+plaqt_adj), polyre, polyim);
       fprintf(datafilep, "\n");
       }
    fflush(datafilep);

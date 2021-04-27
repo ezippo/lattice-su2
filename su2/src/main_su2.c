@@ -121,6 +121,9 @@ void print_template_input(void)
     fprintf(fp, "thermal   0\n");
     fprintf(fp, "measevery 1\n");
     fprintf(fp,"\n");
+    fprintf(fp, "#observables \n");
+    fprintf(fp, "loop_size 1 2\n");
+    fprintf(fp,"\n");
     fprintf(fp, "start                   0  # 0=ordered  1=random  2=from saved configuration\n");
     fprintf(fp, "saveconf_back_every     5  # if 0 does not save, else save backup configurations every ... updates\n");
     fprintf(fp, "\n");
