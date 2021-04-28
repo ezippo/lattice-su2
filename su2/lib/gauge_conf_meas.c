@@ -349,27 +349,28 @@ void perform_measures_localobs(Gauge_Conf const * const GC,
                                GParam const * const param,
                                FILE *datafilep)
    {
-   double plaqs, plaqt, wloops, wloopt, wloops_01, wloopt_01, wloops_11, wloopt_11, wloops_10, wloopt_10, polyre, polyim;
+   double plaqs, plaqt, wloops, wloopt, wloops_11, wloopt_11, wloops_10, wloopt_10, wloops_44, wloopt_44, wloops_42, wloopt_42, polyre, polyim;
    int size1, size2;
    size1 = param->d_loop_size[0];
    size2 = param->d_loop_size[1];
    plaquette(GC, geo, param, &plaqs, &plaqt);
    wilson_loop(GC, geo, param, size1, size2, &wloops, &wloopt);
    wilson_loop(GC, geo, param, size1-1, size2-1, &wloops_11, &wloopt_11);
-   wilson_loop(GC, geo, param, size1, size2-1, &wloops_01, &wloopt_01);
    wilson_loop(GC, geo, param, size1-1, size2, &wloops_10, &wloopt_10);
+   wilson_loop(GC, geo, param, 4, 4, &wloops_44, &wloopt_44);
+   wilson_loop(GC, geo, param, 4, 2, &wloops_42, &wloopt_42);
    polyakov(GC, geo, param, &polyre, &polyim);
 
    if(fabs(param->d_adj_beta)<MIN_VALUE)      // wilson action
       {
-      fprintf(datafilep, "%.12g %.12g %.12g %.12g %.12g %.12g %.12g ", 0.5*(plaqs+plaqt), 0.5*(wloops+wloopt), 0.5*(wloops_11+wloopt_11), 0.5*(wloops_10+wloopt_10), 0.5*(wloops_01+wloopt_01), polyre, polyim);
+      fprintf(datafilep, "%.12g %.12g %.12g %.12g %.12g %.12g %.12g %.12g ", 0.5*(plaqs+plaqt), 0.5*(wloops+wloopt), 0.5*(wloops_11+wloopt_11), 0.5*(wloops_10+wloopt_10), 0.5*(wloops_44+wloopt_44), 0.5*(wloops_42+wloopt_42), polyre, polyim);
       fprintf(datafilep, "\n");
       }
    else                      // fundamental plus adjoint action
       {
       double plaqs_adj, plaqt_adj;
       plaquette_adj(GC, geo, param, &plaqs_adj, &plaqt_adj);
-      fprintf(datafilep, "%.12g %.12g %.12g %.12g %.12g %.12g %.12g %.12g ", 0.5*(plaqs+plaqt), 0.5*(wloops+wloopt), 0.5*(wloops_11+wloopt_11), 0.5*(wloops_10+wloopt_10), 0.5*(wloops_01+wloopt_01), 0.5*(plaqs_adj+plaqt_adj), polyre, polyim);
+      fprintf(datafilep, "%.12g %.12g %.12g %.12g %.12g %.12g %.12g ", 0.5*(plaqs+plaqt), 0.5*(wloops+wloopt), 0.5*(wloops_11+wloopt_11), 0.5*(wloops_10+wloopt_10), 0.5*(plaqs_adj+plaqt_adj), polyre, polyim);
       fprintf(datafilep, "\n");
       }
    fflush(datafilep);

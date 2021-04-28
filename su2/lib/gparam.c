@@ -164,10 +164,10 @@ void readinput(char *in_file, GParam *param)
                    fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
                    exit(EXIT_FAILURE);
                    }
-                 if(temp_i>0)  param->d_loop_size[i]=temp_i;
+                 if(temp_i>0 && temp_i<STDIM)  param->d_loop_size[i]=temp_i;
                  else
                    {
-                   fprintf(stderr, "Error in reading the file %s (%s, %d)\n  - loop_size %d must be greater than 0\n", in_file, __FILE__, __LINE__, i+1);
+                   fprintf(stderr, "Error in reading the file %s (%s, %d)\n  -loop_size %d must be in [1,STDIM-1]\n", in_file, __FILE__, __LINE__, i+1);
                    exit(EXIT_FAILURE);
                    }
                  }
