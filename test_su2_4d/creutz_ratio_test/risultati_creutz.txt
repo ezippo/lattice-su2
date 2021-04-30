@@ -1,0 +1,12 @@
+CREUTZ RATIO 2x2
+
+BETA 2.20	0.4062(6)
+BETA 2.25	0.3593(7)
+BETA 2.30	0.3174(7)
+BETA 2.35	0.2823(8)
+BETA 2.40	0.2525(6)
+BETA 2.50	0.2104(3)
+
+( ref: B. Berg1, A. Billoire2, S. Meyer3, and C. Panagiotakopoulos:
+  SU(2) Lattice Gauge Theory: Standard Action versus Symanzik's Tree-Improved Action.
+  Commun. Math. Phys. 97, 31-58 (1985) )

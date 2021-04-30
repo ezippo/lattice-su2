@@ -91,17 +91,20 @@ def plot_points(x,y,x_label="x",y_label="y",title="", fmt="-", figure=100):
     pyp.ylabel(y_label)
     pyp.title(title)
 
-def plot_errorbar(x,y,dy, x_label="x", y_label="y", title="", dx=0, fmt_=".", figure=200 ):
+def plot_errorbar(x,y,dy, x_label="x", y_label="y", title="", dx=0, fmt_=".", figure=200):
     ''' plot with error '''
     pyp.figure(figure)
-    pyp.errorbar(x,y,dy,dx,fmt=fmt_)
+    if dx==0:
+        pyp.errorbar(x,y,dy,fmt=fmt_, capsize=4)
+    else:
+        pyp.errorbar(x,y,dy,dx,fmt=fmt_, capsize=4)
     pyp.xlabel(x_label)
     pyp.ylabel(y_label)
     pyp.grid(True)
     pyp.title(title)
     
 def creutz_ratio(wloop, wloop_11, wloop_10, wloop_01):
-    return -np.log((average(wloop)*average(wloop_11))/(average(wloop_01)*average(wloop_10)))
+    return (average(wloop)*average(wloop_11))/(average(wloop_01)*average(wloop_10))
     
 
 def sigma_bootstrap_creutz(wloop, wloop_11, wloop_10, wloop_01, pow_bin=0, n_resample=100, n_term=0):
@@ -109,7 +112,7 @@ def sigma_bootstrap_creutz(wloop, wloop_11, wloop_10, wloop_01, pow_bin=0, n_res
         print("ERROR in sigma_bootstrap_creutz: wloop samples have different lenght")
         return 0
     
-    dim_bin = 2**pow_bin
+    dim_bin = int(2**pow_bin)
     n_bin = int(( len(wloop[n_term:]) )/ dim_bin)    
     N = n_bin * dim_bin
     

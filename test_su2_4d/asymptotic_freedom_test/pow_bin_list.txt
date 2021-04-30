@@ -1,0 +1,2 @@
+# autocorrelation lenght = 2^pow_bin for each beta 
+4	6	6	6	7	9	8	7	5	4	3

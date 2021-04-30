@@ -1,0 +1,12 @@
+MEAN PLAQUETTE
+
+BETA 2.20	0.56921(8)
+BETA 2.25	0.58624(8)
+BETA 2.30	0.60232(9)
+BETA 2.35	0.61702(8)
+BETA 2.40	0.63024(8)
+BETA 2.50	0.65246(6)
+
+( ref: B. Berg1, A. Billoire2, S. Meyer3, and C. Panagiotakopoulos:
+  SU(2) Lattice Gauge Theory: Standard Action versus Symanzik's Tree-Improved Action.
+  Commun. Math. Phys. 97, 31-58 (1985) )
