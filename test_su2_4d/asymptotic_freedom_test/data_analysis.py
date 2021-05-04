@@ -102,10 +102,8 @@ def creutz_savetxt(txt_name, path_file, data_name_list, beta_list, pow_bin_l, fm
 
 def plot_creutz_ratios():
     path_dati = "C:\\Users\\e.zippo\\Desktop\\Università\\Tesi\\codice_lattice_su2\\lattice-su2\\"
-    file_name_l = ['6.7', '5', '4', '3.3', '2.8', '2.5', '2.35', '2.2', '2', '1.8', '1.66']
     beta = np.array([ 6.7, 5., 4., 3.3, 2.8, 2.5,2.35, 2.2, 2., 1.8, 1.66 ])
     beta2 = np.array([ 6.7, 5., 4., 3.3, 2.8, 2.5,2.35, 2.2, 2., 1.8 ])
-    powbin = np.loadtxt(path_dati+"test_su2_4d\\asymptotic_freedom_test\\pow_bin_list.txt")
     
     g0_2 = 4./beta
     g02_2 = 4./beta2
@@ -161,15 +159,69 @@ def plot_wloop():
     pyp.show()
     
 
-if __name__=='__main__':
-    plot_wloop()
-    '''
+def plot_asyfree():
     path_dati = "C:\\Users\\e.zippo\\Desktop\\Università\\Tesi\\codice_lattice_su2\\lattice-su2\\"
-    file_list = ['6.7', '5', '4', '3.3', '2.8', '2.5', '2.35', '2.2', '2', '1.8', '1.66']
-    beta = np.array([6.7, 5., 4., 3.3, 2.8, 2.5, 2.35, 2.2, 2, 1.8, 1.66])
-    g_02 = 4./beta
+    beta = np.array([ 6.7, 5., 4., 3.3, 2.8, 2.5,2.35, 2.2, 2., 1.8, 1.66 ])
     
-    powbin = [4, 6, 6,	6,	7, 9, 8, 7,	5, 4, 3]
+    g0_2 = 4./beta
+    gr_2 = 1./ (1./g0_2 - 11*np.log(2)/(12*np.pi*np.pi) )
+    
+    creutz = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\creutz_ratios.txt")
+    xx0 = np.linspace(0,1,10)
+    
+    pyp.figure()
+    pyp.xlabel(r'$g_0^2$')
+    pyp.ylabel(r'1 - $\chi$')
+    pyp.title('Asymptotic freedom')
+    pyp.grid()
+    pyp.plot(xx0, 0.04956*xx0, 'k', linewidth=1.2)
+    pyp.errorbar(g0_2, 1-creutz[:,1], creutz[:,2], fmt='b.', capsize=4, label=r'F($g_0$)' )
+    pyp.errorbar(gr_2[:-1], 1-creutz[:-1,3], creutz[:-1,4], fmt='g.', capsize=4, label=r'G($(\frac{1}{g_0^2} - \frac{11 ln2}{12 \pi^2})^{-1/2}$)')
+    pyp.legend(loc='upper left')
+    pyp.show()
+    
+    
+def plot_gr_vs_g0():
+    path_dati = "C:\\Users\\e.zippo\\Desktop\\Università\\Tesi\\codice_lattice_su2\\lattice-su2\\"
+    beta = np.array([ 6.7, 5., 4., 3.3, 2.8, 2.5,2.35, 2.2, 2., 1.8, 1.66 ])
+    
+    invg0_2 = beta/4.
+    
+    creutz = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\creutz_ratios.txt")
+    invgr_2 = 0.04956/(1-creutz[:,1])
+    d_invgr2 = 0.04956*creutz[:,2]/(1-creutz[:,1])**2
+    print(invg0_2)
+    
+    def retta(x,a,b):
+        return a*x + b
+    
+    n=4
+    popt, pcov = curve_fit(retta, invg0_2[:n], invgr_2[:n], sigma=d_invgr2[:n])
+    print(popt)
+    print(np.sqrt(pcov.diagonal()))
+    chi2 = np.sqrt( ( ((retta(invg0_2[:n], *popt)-invgr_2[:n])/d_invgr2[:n])**2 ).sum() )
+    print(chi2)
+    xx0 = np.linspace(0,0.6,1000)
+    xx1 = np.linspace(0.3,2,10)
+    
+    pyp.figure()
+    pyp.xlabel(r'$1/g_0^2$')
+    pyp.ylabel(r'1/$g^2(2a)$')
+ #   pyp.title('Asymptotic freedom')
+    pyp.grid()
+    pyp.plot(xx1, retta(xx1, popt[0], popt[1]), 'k', linewidth=1.1)
+    pyp.plot(xx0, 0.04956/(1-xx0), 'k', linewidth=1.1)
+    pyp.errorbar(invg0_2, invgr_2, d_invgr2, fmt='r.', capsize=4 )
+ #   pyp.errorbar(gr_2[:-1], 1-creutz[:-1,3], creutz[:-1,4], fmt='g.', capsize=4, label=r'G($(\frac{1}{g_0^2} - \frac{11 ln2}{12 \pi^2})^{-1/2}$)')
+  #  pyp.legend(loc='upper left')
+    pyp.show()
+    
+    
 
-    creutz_savetxt("creutz_ratios.txt",path_dati+"\\su2\\dati_", file_list, beta, powbin)
-    '''
+if __name__=='__main__':
+    path_dati = "C:\\Users\\e.zippo\\Desktop\\Università\\Tesi\\codice_lattice_su2\\lattice-su2\\"
+    dati = np.loadtxt(path_dati + "su2\\dati_1.4_adj1.dat")
+    
+    print(creutz_22(dati,4))
+    
+    

@@ -1,6 +1,6 @@
 			 _________________
 			*		  *
-			*  VERSION 1.2.1  *
+			*  VERSION 1.2.2  *
 			*_________________*
 
 
@@ -32,3 +32,24 @@ NEWS FROM 1.2.0 TO 1.2.1
 			- spatial and temporal observables averaged
 
   - TESTS: creutz ratio tested
+
+**************************************************************************************
+
+NEWS FROM 1.2.1 TO 1.2.2
+
+  - MODIFICATIONS: 1) loop_size[2] is become loop_size[12]:
+			- change in src/main_su2.c -> print_template_input()
+				" wilson_loop_1 1 2
+				  wilson_loop_2 2 2
+				  ...
+				  wilson_loop_6 0 0" now in template 
+			- change in include/gparam.h -> struct GParam
+			- change in lib/gparam.c -> readinput(), print_parameters_local()
+				
+		   2) in lib/gauge_conf_meas.c -> perform_measures_localobs:
+			- now measures and prints on file only wilson loops in template with sizes different from 0
+
+		   3) in lib/gparam.c -> init_data_file()
+			- added first line "# STDIM : size1 size2 ... size(STDIM)"
+			- added second line "# plaquette  W(loop_size[1], loop_size[2])  W(,) ..."
+			  with all the observables measured

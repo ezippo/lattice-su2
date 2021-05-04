@@ -57,7 +57,7 @@ double plaquettep(Gauge_Conf const * const GC,
    }
 
 
-// computation of the rectangulare wilson loop (1/NCOLOR the trace of) size_i*size_j in position r and positive directions i,j
+// computation of the rectangular wilson loop (1/NCOLOR the trace of) size_i*size_j in position r and positive directions i,j
 double wilson_loopp(Gauge_Conf const * const GC,
                     Geometry const * const geo,
                     GParam const * const param,
@@ -348,33 +348,37 @@ void perform_measures_localobs(Gauge_Conf const * const GC,
                                Geometry const * const geo,
                                GParam const * const param,
                                FILE *datafilep)
-   {
-   double plaqs, plaqt, wloops, wloopt, wloops_11, wloopt_11, wloops_10, wloopt_10, wloops_44, wloopt_44, wloops_42, wloopt_42, polyre, polyim;
-   int size1, size2;
-   size1 = param->d_loop_size[0];
-   size2 = param->d_loop_size[1];
-   plaquette(GC, geo, param, &plaqs, &plaqt);
-   wilson_loop(GC, geo, param, size1, size2, &wloops, &wloopt);
-   wilson_loop(GC, geo, param, size1-1, size2-1, &wloops_11, &wloopt_11);
-   wilson_loop(GC, geo, param, size1-1, size2, &wloops_10, &wloopt_10);
-   wilson_loop(GC, geo, param, 4, 4, &wloops_44, &wloopt_44);
-   wilson_loop(GC, geo, param, 4, 2, &wloops_42, &wloopt_42);
-   polyakov(GC, geo, param, &polyre, &polyim);
+{
+   double plaqs, plaqt, wloops, wloopt, polyre, polyim;
+   int size1, size2, i;
 
-   if(fabs(param->d_adj_beta)<MIN_VALUE)      // wilson action
-      {
-      fprintf(datafilep, "%.12g %.12g %.12g %.12g %.12g %.12g %.12g %.12g ", 0.5*(plaqs+plaqt), 0.5*(wloops+wloopt), 0.5*(wloops_11+wloopt_11), 0.5*(wloops_10+wloopt_10), 0.5*(wloops_44+wloopt_44), 0.5*(wloops_42+wloopt_42), polyre, polyim);
-      fprintf(datafilep, "\n");
-      }
-   else                      // fundamental plus adjoint action
-      {
-      double plaqs_adj, plaqt_adj;
-      plaquette_adj(GC, geo, param, &plaqs_adj, &plaqt_adj);
-      fprintf(datafilep, "%.12g %.12g %.12g %.12g %.12g %.12g %.12g ", 0.5*(plaqs+plaqt), 0.5*(wloops+wloopt), 0.5*(wloops_11+wloopt_11), 0.5*(wloops_10+wloopt_10), 0.5*(plaqs_adj+plaqt_adj), polyre, polyim);
-      fprintf(datafilep, "\n");
-      }
-   fflush(datafilep);
+   plaquette(GC, geo, param, &plaqs, &plaqt);
+   fprintf(datafilep, "%.12g ", 0.5*(plaqs+plaqt));
+
+   for(i=0; i<6; i++)
+   {
+     size1 = param->d_loop_size[2*i];
+     size2 = param->d_loop_size[2*i+1];
+     if(size1>0 && size2>0)
+     {
+       wilson_loop(GC, geo, param, size1, size2, &wloops, &wloopt);
+       fprintf(datafilep, "%.12g ", 0.5*(wloops+wloopt));
+     }
    }
+
+   if(fabs(param->d_adj_beta)>MIN_VALUE)      // fundamental plus adjoint action
+  {
+    plaquette_adj(GC, geo, param, &plaqs, &plaqt);
+    fprintf(datafilep, "%.12g ", 0.5*(plaqs+plaqt));
+  }
+
+  polyakov(GC, geo, param, &polyre, &polyim);
+  fprintf(datafilep, "%.12g %.12g ", polyre, polyim);
+  fprintf(datafilep, "\n");
+
+
+  fflush(datafilep);
+}
 
 
 

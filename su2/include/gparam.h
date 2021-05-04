@@ -20,7 +20,7 @@ typedef struct GParam {
   int d_measevery;
 
   // observables
-  int d_loop_size[2];
+  int d_loop_size[12];
 
   // initialization & saving
   int d_start;

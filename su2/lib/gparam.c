@@ -154,7 +154,7 @@ void readinput(char *in_file, GParam *param)
                   param->d_measevery=temp_i;
                   }
 
-           else if(strncmp(str, "loop_size", 9)==0)
+           else if(strncmp(str, "wilson_loop_1", 13)==0)
               {
               for(i=0; i<2; i++)
                  {
@@ -164,40 +164,130 @@ void readinput(char *in_file, GParam *param)
                    fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
                    exit(EXIT_FAILURE);
                    }
-                 if(temp_i>0 && temp_i<STDIM)  param->d_loop_size[i]=temp_i;
+                 if(temp_i>=0 && temp_i<STDIM)  param->d_loop_size[i]=temp_i;
                  else
                    {
-                   fprintf(stderr, "Error in reading the file %s (%s, %d)\n  -loop_size %d must be in [1,STDIM-1]\n", in_file, __FILE__, __LINE__, i+1);
+                   fprintf(stderr, "Error in reading the file %s (%s, %d)\n  -loop_size %d must be in [0,STDIM-1]\n", in_file, __FILE__, __LINE__, i+1);
                    exit(EXIT_FAILURE);
                    }
                  }
               }
+            else if(strncmp(str, "wilson_loop_2", 13)==0)
+               {
+               for(i=0; i<2; i++)
+                  {
+                  err=fscanf(input, "%d", &temp_i);
+                  if(err!=1)
+                    {
+                    fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
+                    exit(EXIT_FAILURE);
+                    }
+                  if(temp_i>=0 && temp_i<STDIM)  param->d_loop_size[2+i]=temp_i;
+                  else
+                    {
+                    fprintf(stderr, "Error in reading the file %s (%s, %d)\n  -loop_size %d must be in [0,STDIM-1]\n", in_file, __FILE__, __LINE__, i+1);
+                    exit(EXIT_FAILURE);
+                    }
+                  }
+               }
+           else if(strncmp(str, "wilson_loop_3", 13)==0)
+              {
+              for(i=0; i<2; i++)
+                 {
+                 err=fscanf(input, "%d", &temp_i);
+                 if(err!=1)
+                   {
+                   fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
+                   exit(EXIT_FAILURE);
+                   }
+                 if(temp_i>=0 && temp_i<STDIM)  param->d_loop_size[4+i]=temp_i;
+                 else
+                   {
+                   fprintf(stderr, "Error in reading the file %s (%s, %d)\n  -loop_size %d must be in [0,STDIM-1]\n", in_file, __FILE__, __LINE__, i+1);
+                   exit(EXIT_FAILURE);
+                   }
+                 }
+              }
+          else if(strncmp(str, "wilson_loop_4", 13)==0)
+             {
+             for(i=0; i<2; i++)
+                {
+                err=fscanf(input, "%d", &temp_i);
+                if(err!=1)
+                  {
+                  fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
+                  exit(EXIT_FAILURE);
+                  }
+                if(temp_i>=0 && temp_i<STDIM)  param->d_loop_size[6+i]=temp_i;
+                else
+                  {
+                  fprintf(stderr, "Error in reading the file %s (%s, %d)\n  -loop_size %d must be in [0,STDIM-1]\n", in_file, __FILE__, __LINE__, i+1);
+                  exit(EXIT_FAILURE);
+                  }
+                }
+             }
+         else if(strncmp(str, "wilson_loop_5", 13)==0)
+            {
+            for(i=0; i<2; i++)
+               {
+               err=fscanf(input, "%d", &temp_i);
+               if(err!=1)
+                 {
+                 fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
+                 exit(EXIT_FAILURE);
+                 }
+               if(temp_i>=0 && temp_i<STDIM)  param->d_loop_size[8+i]=temp_i;
+               else
+                 {
+                 fprintf(stderr, "Error in reading the file %s (%s, %d)\n  -loop_size %d must be in [0,STDIM-1]\n", in_file, __FILE__, __LINE__, i+1);
+                 exit(EXIT_FAILURE);
+                 }
+               }
+            }
+          else if(strncmp(str, "wilson_loop_6", 13)==0)
+             {
+             for(i=0; i<2; i++)
+                {
+                err=fscanf(input, "%d", &temp_i);
+                if(err!=1)
+                  {
+                  fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
+                  exit(EXIT_FAILURE);
+                  }
+                if(temp_i>=0 && temp_i<STDIM)  param->d_loop_size[10+i]=temp_i;
+                else
+                  {
+                  fprintf(stderr, "Error in reading the file %s (%s, %d)\n  -loop_size %d must be in [0,STDIM-1]\n", in_file, __FILE__, __LINE__, i+1);
+                  exit(EXIT_FAILURE);
+                  }
+                }
+             }
 
-           else if(strncmp(str, "start", 5)==0)
+         else if(strncmp(str, "start", 5)==0)
+                {
+                err=fscanf(input, "%d", &temp_i);
+                if(err!=1)
                   {
-                  err=fscanf(input, "%d", &temp_i);
-                  if(err!=1)
-                    {
-                    fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
-                    exit(EXIT_FAILURE);
-                    }
-                  if(temp_i!=0 && temp_i!=1 && temp_i!=2)
-                    {
-                    fprintf(stderr, "Error in reading the file %s (%s, %d)\n  -Parameter start must be 0,1 or 2\n", in_file, __FILE__, __LINE__);
-                    exit(EXIT_FAILURE);
-                    }
-                  else  param->d_start=temp_i;
+                  fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
+                  exit(EXIT_FAILURE);
                   }
-           else if(strncmp(str, "saveconf_back_every", 19)==0)
+                if(temp_i!=0 && temp_i!=1 && temp_i!=2)
                   {
-                  err=fscanf(input, "%d", &temp_i);
-                  if(err!=1)
-                    {
-                    fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
-                    exit(EXIT_FAILURE);
-                    }
-                  param->d_saveconf_back_every=temp_i;
+                  fprintf(stderr, "Error in reading the file %s (%s, %d)\n  -Parameter start must be 0,1 or 2\n", in_file, __FILE__, __LINE__);
+                  exit(EXIT_FAILURE);
                   }
+                else  param->d_start=temp_i;
+                }
+         else if(strncmp(str, "saveconf_back_every", 19)==0)
+                {
+                err=fscanf(input, "%d", &temp_i);
+                if(err!=1)
+                  {
+                  fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
+                  exit(EXIT_FAILURE);
+                  }
+                param->d_saveconf_back_every=temp_i;
+                }
 
            else if(strncmp(str, "epsilon_metro", 13)==0)
                   {
@@ -347,7 +437,7 @@ void init_derived_constants(GParam *param)
 // initialize data file
 void init_data_file(FILE **dataf, GParam const * const param)
   {
-//  int i;
+  int i, size1, size2;
 
   if(param->d_start==2)   // lattice initialization from existing file, new data added to the old saved data
     {
@@ -361,23 +451,42 @@ void init_data_file(FILE **dataf, GParam const * const param)
       {
       *dataf=fopen(param->d_data_file, "w");
 
-//      fprintf(*dataf, "%d ", STDIM);
-//      for(i=0; i<STDIM; i++)
-//         {
-//         fprintf(*dataf, "%d ", param->d_size[i]);
-//         }
-//      fprintf(*dataf, "\n");
+      fprintf(*dataf, "# %d : ", STDIM);      // first line with commented "STDIM: size1 size2 ..."
+      for(i=0; i<STDIM; i++)
+         {
+         fprintf(*dataf, "%d ", param->d_size[i]);
+         }
+      fprintf(*dataf, "\n");
+
+      fprintf(*dataf, "# plaquette  ");    // second line with observables measured (commented)
+      for(i=0; i<6; i++)
+        {
+        size1 = param->d_loop_size[2*i];
+        size2 = param->d_loop_size[2*i+1];
+        if(size1>0 && size2>0)  fprintf(*dataf, " W(%d,%d)   ", size1, size2);
+        }
+      if(fabs(param->d_adj_beta)>MIN_VALUE)   fprintf(*dataf, "1/3 |plaquette|^2 ");   // fundamental plus adjoint action
+      fprintf(*dataf, " Re(polyakov)   Im(polyakov) \n");
       }
     }
   else    // new data file, lattice initialization ordered or random
     {
     *dataf=fopen(param->d_data_file, "w");
-//    fprintf(*dataf, "%d ", STDIM);
-//    for(i=0; i<STDIM; i++)
-//       {
-//       fprintf(*dataf, "%d ", param->d_size[i]);
-//       }
-//    fprintf(*dataf, "\n");
+    fprintf(*dataf, "# %d : ", STDIM);       // first line with commented "STDIM: size1 size2 ..."
+    for(i=0; i<STDIM; i++)
+       {
+       fprintf(*dataf, "%d ", param->d_size[i]);
+       }
+    fprintf(*dataf, "\n");
+    fprintf(*dataf, "# plaquette    ");     // second line with observables measured (commented)
+    for(i=0; i<6; i++)
+      {
+      size1 = param->d_loop_size[2*i];
+      size2 = param->d_loop_size[2*i+1];
+      if(size1>0 && size2>0)  fprintf(*dataf, " W(%d,%d)       ", size1, size2);
+      }
+    if(fabs(param->d_adj_beta)>MIN_VALUE)   fprintf(*dataf, " 1/3 |plaquette|^2 ");   // fundamental plus adjoint action
+    fprintf(*dataf, " Re(polyakov)   Im(polyakov) \n");
     }
   fflush(*dataf);
   }
@@ -388,7 +497,7 @@ void init_data_file(FILE **dataf, GParam const * const param)
 void print_parameters_local(GParam const * const param, time_t time_start, time_t time_end, double acc)
     {
     FILE *fp;
-    int i;
+    int i,size1,size2;
     double diff_sec;
 
     fp=fopen(param->d_log_file, "w");
@@ -416,7 +525,14 @@ void print_parameters_local(GParam const * const param, time_t time_start, time_
     fprintf(fp, "thermal:   %d\n", param->d_thermal);
     fprintf(fp, "measevery: %d\n", param->d_measevery);
 
-    fprintf(fp, "loop size: %d %d \n ", param->d_loop_size[0], param->d_loop_size[1]);
+    fprintf(fp, "loop size: ");
+    for(i=0; i<6; i++)
+      {
+      size1 = param->d_loop_size[2*i];
+      size2 = param->d_loop_size[2*i+1];
+      if(size1>0 && size2>0)  fprintf(fp, "%d %d   ", size1, size2);
+      }
+    fprintf(fp, "\n");
 
     fprintf(fp, "metroespilon: %.10lf\n", param->d_epsilon_metro);
     fprintf(fp, "hits metro: %d \n", param->d_hits_metro);
