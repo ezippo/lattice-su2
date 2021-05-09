@@ -9,22 +9,23 @@ from data_analysis import analysis_functions as ana_func
 
 
 
-def basic_analysis(sample, pow_bin=0, autocorr=1, corr_powbin_max=10, name=""):
+def basic_analysis(sample, pow_bin=0, autocorr=1, corr_powbin_max=10, bool_plot=0, name=""):
     if autocorr==0:
         ana_func.autocorr_bin(sample, corr_powbin_max),
     mu1 = ana_func.average(sample)
-    sigma1 = ana_func.sigma_bootstrap(sample, pow_bin, 300)
+    sigma1 = ana_func.sigma_bootstrap(sample, pow_bin, 100)
     print(f"{name}      {mu1} +- {sigma1}")
-    ana_func.plot_sampletrend(sample)
-    pyp.show()
+    if bool_plot==1:
+        ana_func.plot_sampletrend(sample)
+        pyp.show()
     return
     
     
 def creutz_22(dati, pow_bin=0):
     ''' return creutz ratio W(2,2)W(1,1)/W(1,2)^2 '''
-    wloop = dati[:,1]
-    wloop_11 = dati[:,2]
-    wloop_10 = dati[:,3]
+    wloop = dati[:,2]
+    wloop_11 = dati[:,0]
+    wloop_10 = dati[:,1]
     
     creutz = ana_func.creutz_ratio(wloop, wloop_11, wloop_10, wloop_10)
     sigma_creutz = ana_func.sigma_bootstrap_creutz(wloop,wloop_11,wloop_10,wloop_10, pow_bin, 500)
@@ -34,8 +35,8 @@ def creutz_22(dati, pow_bin=0):
 def creutz_44(dati, pow_bin=0):
     ''' return creutz ratio W(4,4)W(2,2)/W(4,2)^2 with error '''
     wloop = dati[:,4]
-    wloop_11 = dati[:,1]
-    wloop_10 = dati[:,5]
+    wloop_11 = dati[:,2]
+    wloop_10 = dati[:,3]
     
     creutz = ana_func.creutz_ratio(wloop, wloop_11, wloop_10, wloop_10)
     sigma_creutz = ana_func.sigma_bootstrap_creutz(wloop,wloop_11,wloop_10,wloop_10, pow_bin, 500)
@@ -107,7 +108,7 @@ def plot_creutz_ratios():
     
     g0_2 = 4./beta
     g02_2 = 4./beta2
-    creutz = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\creutz_ratios.txt")
+    creutz = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\wilson_action\\creutz_ratios.txt")
     
     xx0 = np.linspace(0,1.5,10)
     xx1 = np.linspace(2,3,1000)
@@ -126,17 +127,44 @@ def plot_creutz_ratios():
     pyp.show()
     
 
+def plot_creutz_ratios_adj():
+    path_dati = "C:\\Users\\e.zippo\\Desktop\\Università\\Tesi\\codice_lattice_su2\\lattice-su2\\"
+    beta_adj = np.array([3., 2.2, 1.8, 1.7, 1.65, 1.6, 1.57, 1.55, 1.53, 1.5, 1.4 ])
+    beta_fund = 1.0
+    
+    g0_2 = 4./(beta_fund+8*beta_adj/3)
+    
+    creutz = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\fund_plus_adj_action\\creutz_ratios.txt")
+    
+    xx0 = np.linspace(0.35,0.8,10)
+    #xx1 = np.linspace(0.8,1.2,1000)
+    
+    pyp.figure()
+    pyp.xlim([0.35,0.9])
+    pyp.xlabel(r'$g_0^2$')
+    pyp.ylabel(r'1 - $\chi$')
+    pyp.title('Creutz ratio')
+    pyp.grid()
+    pyp.plot(xx0, 0.04956*xx0, 'k', linewidth=1.2)
+    #pyp.plot(xx1, 1-1/xx1, 'k',linewidth=1.2)
+    #pyp.plot(xx1, 1-1/xx1**4, 'k',linewidth=1.2)
+    pyp.errorbar(g0_2, 1-creutz[:,1], creutz[:,2], fmt='b.', capsize=4, label=r'F($g_0$)' )
+    pyp.errorbar(g0_2[:-1], 1-creutz[:-1,3], creutz[:-1,4], fmt='g.', capsize=4, label=r'G($g_0$)')
+    pyp.legend(loc='upper left')
+    pyp.show()
+    
+
 def plot_wloop():
     path_dati = "C:\\Users\\e.zippo\\Desktop\\Università\\Tesi\\codice_lattice_su2\\lattice-su2\\"
     beta = np.array([6.7, 5., 4., 3.3, 2.8, 2.5,2.35, 2.2, 2., 1.8, 1.66 ])
     
     g0_2 = 4./beta
     
-    wloop11 = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\wloop_1x1.txt")
-    wloop21 = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\wloop_2x1.txt")
-    wloop22 = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\wloop_2x2.txt")
-    wloop42 = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\wloop_4x2.txt")
-    wloop44 = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\wloop_4x4.txt")
+    wloop11 = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\wilson_action\\wloop_1x1.txt")
+    wloop21 = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\wilson_action\\wloop_2x1.txt")
+    wloop22 = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\wilson_action\\wloop_2x2.txt")
+    wloop42 = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\wilson_action\\wloop_4x2.txt")
+    wloop44 = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\wilson_action\\wloop_4x4.txt")
     
     xx0 = np.linspace(0,1,1000)
     xx1 = np.linspace(1.8,3,1000)
@@ -158,6 +186,40 @@ def plot_wloop():
     pyp.legend()
     pyp.show()
     
+    
+def plot_wloop_adj():
+    path_dati = "C:\\Users\\e.zippo\\Desktop\\Università\\Tesi\\codice_lattice_su2\\lattice-su2\\"
+    beta_adj = np.array([3., 2.2, 1.8, 1.7, 1.65, 1.6, 1.57, 1.55, 1.53, 1.5, 1.4 ])
+    beta_fund = 1.0
+    
+    g0_2 = 4./(beta_fund+8*beta_adj/3)
+    
+    wloop11 = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\fund_plus_adj_action\\wloop_1x1.txt")
+    wloop21 = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\fund_plus_adj_action\\wloop_2x1.txt")
+    wloop22 = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\fund_plus_adj_action\\wloop_2x2.txt")
+    wloop42 = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\fund_plus_adj_action\\wloop_4x2.txt")
+    wloop44 = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\fund_plus_adj_action\\wloop_4x4.txt")
+    
+    #xx0 = np.linspace(0,1,1000)
+    #xx1 = np.linspace(1.8,3,1000)
+    
+    pyp.figure()
+    pyp.xlabel(r'$g_0^2$')
+    pyp.ylabel('W')
+    pyp.title('Wilson loop')
+    pyp.grid()
+    #pyp.plot(xx0, 1-3*xx0/16, 'k', linewidth=1.2)
+    #pyp.plot(xx1, 1/xx1, 'k',linewidth=1.2)
+    #pyp.plot(xx1, 1/xx1**2, 'k',linewidth=1.2)
+    #pyp.plot(xx1, 1/xx1**4, 'k',linewidth=1.2)
+    pyp.errorbar(g0_2, wloop11[:,1], wloop11[:,2], fmt='^',  label='W(1,1)' )
+    pyp.errorbar(g0_2, wloop21[:,1], wloop21[:,2], fmt='o', label='W(2,1)' )
+    pyp.errorbar(g0_2, wloop22[:,1], wloop22[:,2], fmt='p', label='W(2,2)' )
+    pyp.errorbar(g0_2, wloop42[:,1], wloop42[:,2], fmt='s',  label='W(4,2)' )
+    pyp.errorbar(g0_2, wloop44[:,1], wloop44[:,2], fmt='v',  label='W(4,4)' )
+    pyp.legend()
+    pyp.show()
+    
 
 def plot_asyfree():
     path_dati = "C:\\Users\\e.zippo\\Desktop\\Università\\Tesi\\codice_lattice_su2\\lattice-su2\\"
@@ -166,10 +228,35 @@ def plot_asyfree():
     g0_2 = 4./beta
     gr_2 = 1./ (1./g0_2 - 11*np.log(2)/(12*np.pi*np.pi) )
     
-    creutz = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\creutz_ratios.txt")
+    creutz = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\wilson_action\\creutz_ratios.txt")
     xx0 = np.linspace(0,1,10)
     
     pyp.figure()
+    pyp.xlabel(r'$g_0^2$')
+    pyp.ylabel(r'1 - $\chi$')
+    pyp.title('Asymptotic freedom')
+    pyp.grid()
+    pyp.plot(xx0, 0.04956*xx0, 'k', linewidth=1.2)
+    pyp.errorbar(g0_2, 1-creutz[:,1], creutz[:,2], fmt='b.', capsize=4, label=r'F($g_0$)' )
+    pyp.errorbar(gr_2[:-1], 1-creutz[:-1,3], creutz[:-1,4], fmt='g.', capsize=4, label=r'G($(\frac{1}{g_0^2} - \frac{11 ln2}{12 \pi^2})^{-1/2}$)')
+    pyp.legend(loc='upper left')
+    pyp.show()
+    
+    
+
+def plot_asyfree_adj():
+    path_dati = "C:\\Users\\e.zippo\\Desktop\\Università\\Tesi\\codice_lattice_su2\\lattice-su2\\"
+    beta_adj = np.array([3., 2.2, 1.8, 1.7, 1.65, 1.6, 1.57, 1.55, 1.53, 1.5, 1.4 ])
+    beta_fund = 1.0
+    
+    g0_2 = 4./(beta_fund+8*beta_adj/3)
+    gr_2 = 1./ (1./g0_2 - 11*np.log(2)/(12*np.pi*np.pi) )
+    
+    creutz = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\fund_plus_adj_action\\creutz_ratios.txt")
+    xx0 = np.linspace(0,1,10)
+    
+    pyp.figure()
+    pyp.xlim([0.2,0.9])
     pyp.xlabel(r'$g_0^2$')
     pyp.ylabel(r'1 - $\chi$')
     pyp.title('Asymptotic freedom')
@@ -187,7 +274,7 @@ def plot_gr_vs_g0():
     
     invg0_2 = beta/4.
     
-    creutz = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\creutz_ratios.txt")
+    creutz = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\wilson_action\\creutz_ratios.txt")
     invgr_2 = 0.04956/(1-creutz[:,1])
     d_invgr2 = 0.04956*creutz[:,2]/(1-creutz[:,1])**2
     print(invg0_2)
@@ -216,12 +303,55 @@ def plot_gr_vs_g0():
   #  pyp.legend(loc='upper left')
     pyp.show()
     
+
+def plot_gr_vs_g0_adj():
+    path_dati = "C:\\Users\\e.zippo\\Desktop\\Università\\Tesi\\codice_lattice_su2\\lattice-su2\\"
+    beta_adj = np.array([3., 2.2, 1.8, 1.7, 1.65, 1.6, 1.57, 1.55, 1.53, 1.5, 1.4 ])
+    beta_fund = 1.0
+    
+    invg0_2 = (beta_fund + 8*beta_adj/3)/4.
+    
+    creutz = np.loadtxt(path_dati+ "\\test_su2_4d\\asymptotic_freedom_test\\fund_plus_adj_action\\creutz_ratios.txt")
+    invgr_2 = 0.04956/(1-creutz[:,1])
+    d_invgr2 = 0.04956*creutz[:,2]/(1-creutz[:,1])**2
+    print(invg0_2)
+    
+    def retta(x,a,b):
+        return a*x + b
+    
+    n=4
+    popt, pcov = curve_fit(retta, invg0_2[:n], invgr_2[:n], sigma=d_invgr2[:n])
+    print(popt)
+    print(np.sqrt(pcov.diagonal()))
+    chi2 = np.sqrt( ( ((retta(invg0_2[:n], *popt)-invgr_2[:n])/d_invgr2[:n])**2 ).sum() )
+    print(chi2)
+    #xx0 = np.linspace(1.1,1.4,1000)
+    xx1 = np.linspace(0.8,2.3,10)
+    
+    pyp.figure()
+    pyp.xlabel(r'$1/g_0^2$')
+    pyp.ylabel(r'1/$g^2(2a)$')
+ #   pyp.title('Asymptotic freedom')
+    pyp.grid()
+    pyp.plot(xx1, retta(xx1, popt[0], popt[1]), 'k', linewidth=1.1)
+    #pyp.plot(xx0, 0.04956/(1-xx0), 'k', linewidth=1.1)
+    pyp.errorbar(invg0_2, invgr_2, d_invgr2, fmt='r.', capsize=4 )
+ #   pyp.errorbar(gr_2[:-1], 1-creutz[:-1,3], creutz[:-1,4], fmt='g.', capsize=4, label=r'G($(\frac{1}{g_0^2} - \frac{11 ln2}{12 \pi^2})^{-1/2}$)')
+  #  pyp.legend(loc='upper left')
+    pyp.show()
     
 
 if __name__=='__main__':
     path_dati = "C:\\Users\\e.zippo\\Desktop\\Università\\Tesi\\codice_lattice_su2\\lattice-su2\\"
-    dati = np.loadtxt(path_dati + "su2\\dati_1.4_adj1.dat")
+    dati = np.loadtxt(path_dati + "su2\\dati_adj8_rnd.dat")
+    basic_analysis(dati[:,-2],6,0,10,1)
     
-    print(creutz_22(dati,4))
+    '''
+    path_dati = "C:\\Users\\e.zippo\\Desktop\\Università\\Tesi\\codice_lattice_su2\\lattice-su2\\"
+    dati = np.loadtxt(path_dati + "su2\\dati_1_adj1.51.dat")
+    beta_adj = [3., 2.2, 1.8, 1.7, 1.65, 1.6, 1.57, 1.55, 1.53, 1.5, 1.4]
+    file_list = ['3', '2.2', '1.8', '1.7', '1.65', '1.6', '1.57', '1.55', '1.53', '1.5', '1.4']
+    powbin = np.loadtxt(path_dati+"test_su2_4d\\asymptotic_freedom_test\\fund_plus_adj_action\\pow_bin_list.txt")
     
-    
+    plot_gr_vs_g0_adj()
+    '''

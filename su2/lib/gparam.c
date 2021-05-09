@@ -63,7 +63,7 @@ void readinput(char *in_file, GParam *param)
     FILE *input;
     char str[STD_STRING_LENGTH], temp_str[STD_STRING_LENGTH];
     double temp_d;
-    int temp_i, i;
+    int temp_i, i,j;
     int err, end=1;
     unsigned int temp_ui;
 
@@ -164,12 +164,7 @@ void readinput(char *in_file, GParam *param)
                    fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
                    exit(EXIT_FAILURE);
                    }
-                 if(temp_i>=0 && temp_i<STDIM)  param->d_loop_size[i]=temp_i;
-                 else
-                   {
-                   fprintf(stderr, "Error in reading the file %s (%s, %d)\n  -loop_size %d must be in [0,STDIM-1]\n", in_file, __FILE__, __LINE__, i+1);
-                   exit(EXIT_FAILURE);
-                   }
+                 param->d_loop_size[i]=temp_i;
                  }
               }
             else if(strncmp(str, "wilson_loop_2", 13)==0)
@@ -182,30 +177,20 @@ void readinput(char *in_file, GParam *param)
                     fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
                     exit(EXIT_FAILURE);
                     }
-                  if(temp_i>=0 && temp_i<STDIM)  param->d_loop_size[2+i]=temp_i;
-                  else
-                    {
-                    fprintf(stderr, "Error in reading the file %s (%s, %d)\n  -loop_size %d must be in [0,STDIM-1]\n", in_file, __FILE__, __LINE__, i+1);
-                    exit(EXIT_FAILURE);
-                    }
+                  param->d_loop_size[2+i]=temp_i;
                   }
                }
            else if(strncmp(str, "wilson_loop_3", 13)==0)
               {
               for(i=0; i<2; i++)
                  {
-                 err=fscanf(input, "%d", &temp_i);
+                 err=fscanf(input, "%d ", &temp_i);
                  if(err!=1)
                    {
                    fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
                    exit(EXIT_FAILURE);
                    }
-                 if(temp_i>=0 && temp_i<STDIM)  param->d_loop_size[4+i]=temp_i;
-                 else
-                   {
-                   fprintf(stderr, "Error in reading the file %s (%s, %d)\n  -loop_size %d must be in [0,STDIM-1]\n", in_file, __FILE__, __LINE__, i+1);
-                   exit(EXIT_FAILURE);
-                   }
+                 param->d_loop_size[4+i]=temp_i;
                  }
               }
           else if(strncmp(str, "wilson_loop_4", 13)==0)
@@ -218,12 +203,7 @@ void readinput(char *in_file, GParam *param)
                   fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
                   exit(EXIT_FAILURE);
                   }
-                if(temp_i>=0 && temp_i<STDIM)  param->d_loop_size[6+i]=temp_i;
-                else
-                  {
-                  fprintf(stderr, "Error in reading the file %s (%s, %d)\n  -loop_size %d must be in [0,STDIM-1]\n", in_file, __FILE__, __LINE__, i+1);
-                  exit(EXIT_FAILURE);
-                  }
+                param->d_loop_size[6+i]=temp_i;
                 }
              }
          else if(strncmp(str, "wilson_loop_5", 13)==0)
@@ -236,12 +216,7 @@ void readinput(char *in_file, GParam *param)
                  fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
                  exit(EXIT_FAILURE);
                  }
-               if(temp_i>=0 && temp_i<STDIM)  param->d_loop_size[8+i]=temp_i;
-               else
-                 {
-                 fprintf(stderr, "Error in reading the file %s (%s, %d)\n  -loop_size %d must be in [0,STDIM-1]\n", in_file, __FILE__, __LINE__, i+1);
-                 exit(EXIT_FAILURE);
-                 }
+               param->d_loop_size[8+i]=temp_i;
                }
             }
           else if(strncmp(str, "wilson_loop_6", 13)==0)
@@ -254,12 +229,7 @@ void readinput(char *in_file, GParam *param)
                   fprintf(stderr, "Error in reading the file %s (%s, %d)\n", in_file, __FILE__, __LINE__);
                   exit(EXIT_FAILURE);
                   }
-                if(temp_i>=0 && temp_i<STDIM)  param->d_loop_size[10+i]=temp_i;
-                else
-                  {
-                  fprintf(stderr, "Error in reading the file %s (%s, %d)\n  -loop_size %d must be in [0,STDIM-1]\n", in_file, __FILE__, __LINE__, i+1);
-                  exit(EXIT_FAILURE);
-                  }
+                param->d_loop_size[10+i]=temp_i;
                 }
              }
 
@@ -404,6 +374,22 @@ void readinput(char *in_file, GParam *param)
       if(err==1)
         {
         fprintf(stderr, "Error: all sizes has to be larger than 1: the totally reduced case is not implemented! (%s, %d)\n", __FILE__, __LINE__);
+        }
+
+      err=0;
+      for(i=0; i<STDIM; i++)
+         {
+         for(j=0; j<12; j++)
+           {
+           if(param->d_loop_size[j] > param->d_size[i])
+             {
+             err=1;
+             }
+           }
+         }
+      if(err==1)
+        {
+        fprintf(stderr, "Error: all wilson_loop sizes has to be larger than lattice sizes! (%s, %d)\n", __FILE__, __LINE__);
         }
 
       init_derived_constants(param);

@@ -56,7 +56,7 @@ def sigma_bootstrap(sample, pow_bin=0, n_resample=100, function='average', n_ter
         parameter function: function of the estimator
         parameter n_term: first n_term data are discarded
         '''
-    dim_bin = 2**pow_bin
+    dim_bin = int(2**pow_bin)
     n_bin = int(( len(sample[n_term:]) )/ dim_bin)    
     N = n_bin * dim_bin
     
