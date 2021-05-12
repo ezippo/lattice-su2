@@ -464,15 +464,19 @@ void init_data_file(FILE **dataf, GParam const * const param)
        fprintf(*dataf, "%d ", param->d_size[i]);
        }
     fprintf(*dataf, "\n");
-    fprintf(*dataf, "# plaquette    ");     // second line with observables measured (commented)
+
+    fprintf(*dataf, "# Tr_f(plaq)/2   ");     // second line with observables measured (commented)
+    if(fabs(param->d_adj_beta)>MIN_VALUE)   fprintf(*dataf, " Tr_a(plaq)/3  ");   // fundamental plus adjoint action
+
     for(i=0; i<6; i++)
       {
       size1 = param->d_loop_size[2*i];
       size2 = param->d_loop_size[2*i+1];
       if(size1>0 && size2>0)  fprintf(*dataf, " W(%d,%d)       ", size1, size2);
       }
-    if(fabs(param->d_adj_beta)>MIN_VALUE)   fprintf(*dataf, " 1/3 |plaquette|^2 ");   // fundamental plus adjoint action
+
     fprintf(*dataf, " Re(polyakov)   Im(polyakov) \n");
+
     }
   fflush(*dataf);
   }

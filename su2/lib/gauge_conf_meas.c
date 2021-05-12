@@ -220,8 +220,8 @@ void plaquette_adj(Gauge_Conf const * const GC,
      for(j=1; j<STDIM; j++)
         {
         double tmp;
-        tmp=plaquettep(GC, geo, param, r, i, j);
-        pt+=tmp*tmp;
+        tmp=2*plaquettep(GC, geo, param, r, i, j);
+        pt+=tmp*tmp-1;
         }
 
      for(i=1; i<STDIM; i++)
@@ -229,8 +229,8 @@ void plaquette_adj(Gauge_Conf const * const GC,
         for(j=i+1; j<STDIM; j++)
            {
            double tmp;
-           tmp=plaquettep(GC, geo, param, r, i, j);
-           ps+=tmp*tmp;
+           tmp=2*plaquettep(GC, geo, param, r, i, j);
+           ps+=tmp*tmp-1;
            }
         }
      }
@@ -248,8 +248,8 @@ void plaquette_adj(Gauge_Conf const * const GC,
   pt*=param->d_inv_vol;
   pt/=((double) STDIM-1);
 
-  *plaqs=ps*4.0/3.0;
-  *plaqt=pt*4.0/3.0;
+  *plaqs=ps/3.0;
+  *plaqt=pt/3.0;
   }
 
 
@@ -301,6 +301,59 @@ void wilson_loop(Gauge_Conf const * const GC,
 
   *wloop_s=ws;
   *wloop_t=wt;
+}
+
+
+// compute the mean wilson loop size_i*size_j (spatial, temporal)
+void wilson_loop_adj(Gauge_Conf const * const GC,
+                     Geometry const * const geo,
+                     GParam const * const param,
+                     int const size_i,
+                     int const size_j,
+                     double *wloop_s,
+                     double *wloop_t)
+{
+  long r;
+  double ws=0.0, wt=0.0, tmp;
+
+  #ifdef OPENMP_MODE
+  #pragma omp parallel for num_threads(NTHREADS) private(r) reduction(+ : wt) reduction(+ : ws)
+  #endif
+  for(r=0; r<(param->d_volume); r++)
+     {
+     int i, j;
+     i=0;
+     for(j=1; j<STDIM; j++)
+        {
+        tmp=2*wilson_loopp(GC, geo, param, r, i, j, size_i, size_j);
+        wt += tmp*tmp-1;
+        }
+
+     for(i=1; i<STDIM; i++)
+        {
+        for(j=i+1; j<STDIM; j++)
+           {
+           tmp=2*wilson_loopp(GC, geo, param, r, i, j, size_i, size_j);
+           ws+= tmp*tmp-1;
+           }
+        }
+     }
+
+  if(STDIM>2)
+    {
+    ws*=param->d_inv_vol;
+    ws/=((double) (STDIM-1)*(STDIM-2)/2);
+    }
+  else
+    {
+    ws=0.0;
+    }
+
+  wt*=param->d_inv_vol;
+  wt/=((double) STDIM-1);
+
+  *wloop_s=ws/3;    // tr()/N_c  (N_c=3 for adj repr)
+  *wloop_t=wt/3;
 }
 
 

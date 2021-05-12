@@ -72,6 +72,13 @@ void wilson_loop(Gauge_Conf const * const GC,
                  int const size_j,
                  double *wloop_s,
                  double *wloop_t);
+void wilson_loop_adj(Gauge_Conf const * const GC,
+                     Geometry const * const geo,
+                     GParam const * const param,
+                     int const size_i,
+                     int const size_j,
+                     double *wloop_s,
+                     double *wloop_t);
 void polyakov(Gauge_Conf const * const GC,
               Geometry const * const geo,
               GParam const * const param,
