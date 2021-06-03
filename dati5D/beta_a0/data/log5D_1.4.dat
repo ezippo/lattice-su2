@@ -1,0 +1,28 @@
++--------------------+
+| Simulation details |
++--------------------+
+
+spacetime dimensionality: 5
+
+lattice: 4x4x4x4x4
+
+beta: 1.4000000000
+beta_adj: 0.0000000000
+sample:    100000
+thermal:   0
+measevery: 5
+loop size: 1 2   2 2   2 3   3 3   2 4   4 4   
+metroespilon: 0.8800000000
+hits metro: 1 
+
+start:                   2
+saveconf_back_every:     5000
+
+randseed: 0
+
+Simulation time: 459.000 seconds
+
+Metropolis acceptance: 0.626103
+
+Little endian machine
+

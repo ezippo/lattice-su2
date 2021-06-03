@@ -466,7 +466,8 @@ void init_data_file(FILE **dataf, GParam const * const param)
     fprintf(*dataf, "\n");
 
     fprintf(*dataf, "# Tr_f(plaq)/2   ");     // second line with observables measured (commented)
-    if(fabs(param->d_adj_beta)>MIN_VALUE)   fprintf(*dataf, " Tr_a(plaq)/3  ");   // fundamental plus adjoint action
+    fprintf(*dataf, " Tr_a(plaq)/3   ");       // adjoint plaquette
+    fprintf(*dataf, "  energy      ");       // beta_f*(1-Tr_f(plaq)/2) + beta_a*(1-Tr_a(plaq)/3)
 
     for(i=0; i<6; i++)
       {

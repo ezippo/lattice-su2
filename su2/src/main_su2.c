@@ -24,7 +24,7 @@ void real_main(char *in_file)
     GParam param;
 
     int count;
-    double acc_metro=0.0;
+    double acc_metro=0.0, tmp_acc;
     FILE *datafilep;
     time_t time1, time2;
 
@@ -54,9 +54,17 @@ void real_main(char *in_file)
     // count starts from 1 to avoid problems using %
     for(count=1; count < param.d_sample + 1; count++)
        {
-       acc_metro += update_metropolis(&GC, &geo, &param);
+       tmp_acc = update_metropolis(&GC, &geo, &param);
+       // epsilon_metro autotune during thermalization
+       if(count<param.d_thermal)
+       {
+         if(tmp_acc<0.3)  param.d_epsilon_metro *= 1.1;
+         else if (tmp_acc>0.6) param.d_epsilon_metro *= 0.93;
+         tmp_acc=0;
+       }
 
-       if(count % param.d_measevery ==0 && count >= param.d_thermal)
+       acc_metro += tmp_acc;
+       if(count % param.d_measevery ==0)
          {
          perform_measures_localobs(&GC, &geo, &param, datafilep);
          }
@@ -87,7 +95,7 @@ void real_main(char *in_file)
       }
 
     // print simulation details
-    print_parameters_local(&param, time1, time2, acc_metro/param.d_sample);
+    print_parameters_local(&param, time1, time2, acc_metro/(param.d_sample-param.d_thermal));
 
     // free gauge configuration
     free_gauge_conf(&GC, &param);
@@ -117,8 +125,8 @@ void print_template_input(void)
     fprintf(fp, "beta     5.705\n");
     fprintf(fp, "adj_beta 0.0\n");
     fprintf(fp,"\n");
-    fprintf(fp, "sample    10\n");
-    fprintf(fp, "thermal   0\n");
+    fprintf(fp, "sample    1000\n");
+    fprintf(fp, "thermal   100\n");
     fprintf(fp, "measevery 1\n");
     fprintf(fp,"\n");
     fprintf(fp, "#observables \n");
@@ -130,16 +138,16 @@ void print_template_input(void)
     fprintf(fp, "wilson_loop_6 0 0\n");
 
     fprintf(fp,"\n");
-    fprintf(fp, "start                   0  # 0=ordered  1=random  2=from saved configuration\n");
-    fprintf(fp, "saveconf_back_every     5  # if 0 does not save, else save backup configurations every ... updates\n");
+    fprintf(fp, "start                   0     # 0=ordered  1=random  2=from saved configuration\n");
+    fprintf(fp, "saveconf_back_every     5000  # if 0 does not save, else save backup configurations every ... updates\n");
     fprintf(fp, "\n");
-    fprintf(fp, "epsilon_metro  0.1\n");
+    fprintf(fp, "epsilon_metro  0.9\n");
     fprintf(fp, "hits_metro     1\n");
     fprintf(fp,"\n");
     fprintf(fp, "#output files\n");
-    fprintf(fp, "conf_file  conf.dat\n");
-    fprintf(fp, "data_file  dati.dat\n");
-    fprintf(fp, "log_file   log.dat\n");
+    fprintf(fp, "conf_file  conf5D.dat\n");
+    fprintf(fp, "data_file  dati5D.dat\n");
+    fprintf(fp, "log_file   log5D.dat\n");
     fprintf(fp, "\n");
     fprintf(fp, "randseed 0    #(0=time)\n");
     fclose(fp);

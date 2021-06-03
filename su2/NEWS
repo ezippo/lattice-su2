@@ -68,3 +68,12 @@ NEWS FROM 1.2.2 TO 1.2.3
 		   2) in lib/gparam.c -> init_data_file():
 			- change in second line: "# Tr_f(plaq)/2  Tr_a(plaq)/3	W(loop_size[1], loop_size[2])  W(,) ..." 
 			  ( instead of "# plaquette  W(loop_size[1], loop_size[2])  W(,) ... 1/3|Tr_f(plaq)|^2  Polyakov... " )
+
+
+******************************************************************************************
+
+NEWS FROM 1.2.3 to 1.2.4
+
+  - MODIFICATIONS: in src/main_su2.c -> real_main()
+		     - added epsilon_metro autotune during thermalization
+		     - thermalization measures are not discarded anymore

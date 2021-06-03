@@ -49,7 +49,7 @@ def autocorr_bin(sample, pow_bin_max=10, n_term=0):
     pyp.show()
 
 
-def sigma_bootstrap(sample, pow_bin=0, n_resample=100, function='average', n_term=0):
+def sigma_bootstrap(sample, pow_bin=0, n_resample=100, function='average', vol=0, n_term=0):
     ''' estimator standard deviation with covariance estimate with bootstrap technique
         parameter pow_bin: block size = 2^pow_bin
         parameter n_resample: number of resamples from sample
@@ -66,6 +66,8 @@ def sigma_bootstrap(sample, pow_bin=0, n_resample=100, function='average', n_ter
     
     if function=='average':
         mu = np.array([ average(resample[i]) for i in range(n_resample) ])
+    elif function=='specific_heat':
+        mu = np.array([ specific_heat(resample[i], vol) for i in range(n_resample) ])
     else:
         print("ERROR: wrong function in sigma_bootstrap()")
     
@@ -131,6 +133,15 @@ def sigma_bootstrap_creutz(wloop, wloop_11, wloop_10, wloop_01, pow_bin=0, n_res
     mu = np.array([ creutz_ratio(wloop_resample[i], wloop_11_resample[i], wloop_10_resample[i], wloop_01_resample[i]) for i in range(n_resample) ])
     
     return np.sqrt(((mu - average(mu))**2).sum()/n_resample)
+
+
+def specific_heat(ene_sample, vol, n_term=0):
+    if vol<=0:
+        print("ERROR: volume must be greater than zero! (specific_heat())")
+        return 0
+    mu = average(ene_sample, n_term)
+    mu_square = average(ene_sample**2 , n_term)
+    return vol*(mu_square - mu**2)
 
 #if __name__=='__main__':
     

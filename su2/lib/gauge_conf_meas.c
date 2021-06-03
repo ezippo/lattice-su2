@@ -402,11 +402,20 @@ void perform_measures_localobs(Gauge_Conf const * const GC,
                                GParam const * const param,
                                FILE *datafilep)
 {
-   double plaqs, plaqt, wloops, wloopt, polyre, polyim;
+   double obs1, obs2, ene;
    int size1, size2, i;
 
-   plaquette(GC, geo, param, &plaqs, &plaqt);
-   fprintf(datafilep, "%.12g ", 0.5*(plaqs+plaqt));
+   plaquette(GC, geo, param, &obs1, &obs2);     // Tr_f(plaq)/2
+   obs1 = 0.5*(obs1+obs2);
+   fprintf(datafilep, "%.12g ", obs1);
+   ene = param->d_beta*(1-obs1);
+
+   plaquette_adj(GC, geo, param, &obs1, &obs2);     // Tr_a(plaq)/3
+   obs1 = 0.5*(obs1+obs2);
+   fprintf(datafilep, "%.12g ", obs1);
+
+   ene += param->d_adj_beta*(1-obs1);
+   fprintf(datafilep, "%.12g ", ene);   // ene = beta_f*(1-Tr_f(plaq)/2) + beta_a*(1-Tr_a(plaq)/3)
 
    for(i=0; i<6; i++)
    {
@@ -414,19 +423,13 @@ void perform_measures_localobs(Gauge_Conf const * const GC,
      size2 = param->d_loop_size[2*i+1];
      if(size1>0 && size2>0)
      {
-       wilson_loop(GC, geo, param, size1, size2, &wloops, &wloopt);
-       fprintf(datafilep, "%.12g ", 0.5*(wloops+wloopt));
+       wilson_loop(GC, geo, param, size1, size2, &obs1, &obs2);
+       fprintf(datafilep, "%.12g ", 0.5*(obs1+obs2));
      }
    }
 
-   if(fabs(param->d_adj_beta)>MIN_VALUE)      // fundamental plus adjoint action
-  {
-    plaquette_adj(GC, geo, param, &plaqs, &plaqt);
-    fprintf(datafilep, "%.12g ", 0.5*(plaqs+plaqt));
-  }
-
-  polyakov(GC, geo, param, &polyre, &polyim);
-  fprintf(datafilep, "%.12g %.12g ", polyre, polyim);
+  polyakov(GC, geo, param, &obs1, &obs2);
+  fprintf(datafilep, "%.12g %.12g ", obs1, obs2);
   fprintf(datafilep, "\n");
 
 

@@ -1,0 +1,28 @@
+size 8 8 8 8 
+beta     0.0
+adj_beta 2.55
+
+sample    12000
+thermal   2000
+measevery 5
+
+#observables 
+wilson_loop_1 1 2
+wilson_loop_2 2 2
+wilson_loop_3 0 0
+wilson_loop_4 0 0
+wilson_loop_5 0 0
+wilson_loop_6 0 0
+
+start                   1     # 0=ordered  1=random  2=from saved configuration
+saveconf_back_every     5000  # if 0 does not save, else save backup configurations every ... updates
+
+epsilon_metro  0.92
+hits_metro     1
+
+#output files
+conf_file  conf_a2.55_rnd.dat
+data_file  dati_a2.55_rnd.dat
+log_file   log_a2.55_rnd.dat
+
+randseed 0    #(0=time)
